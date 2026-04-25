@@ -172,7 +172,7 @@ class ParameterPerturber:
                 self.model.named_parameters(), importances.items()
             ):
                 if p.grad is not None:
-                    imp.data += p.grad.data.clone().pow(2)
+                    imp.data += p.grad.data.clone().pow(2) # 그래디언트의 제곱으로 FIM의 대각 행렬 근사
 
         # average over mini batch length
         for _, imp in importances.items():
@@ -204,9 +204,12 @@ class ParameterPerturber:
             ):
                 # Synapse Selection with parameter alpha
                 oimp_norm = oimp.mul(self.selection_weighting)
-                locations = torch.where(fimp > oimp_norm)
+                locations = torch.where(fimp > oimp_norm) # 망각(fimp) 중요도가 전체 중요도(oimp)보다 alpha(selection_weighting) 배 이상인 파라미터의 위치 선별
 
                 # Synapse Dampening with parameter lambda
+                # oimp.mul(self.dampening_constant) : 전체 중요도(oimp)에 보호 하이퍼파리미터 lambda값 곱한 과정
+                # div(fimp) : 망각 중요도(fimp)로 나눈 과정
+                # ((oimp.mul(self.dampening_constant)).div(fimp)) : 감쇠계수 계산
                 weight = ((oimp.mul(self.dampening_constant)).div(fimp)).pow(
                     self.exponent
                 )

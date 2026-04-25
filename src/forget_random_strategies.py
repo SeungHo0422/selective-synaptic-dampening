@@ -18,7 +18,7 @@ from sklearn import linear_model, model_selection
 from unlearn import *
 from metrics import UnLearningScore, get_membership_attack_prob
 from utils import *
-import ssd as ssd
+import ssd as sd
 import conf
 
 
@@ -336,7 +336,7 @@ def ssd_tuning(
     # load the trained model
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
-    ssd = ssd.ParameterPerturber(model, optimizer, device, parameters)
+    ssd = sd.ParameterPerturber(model, optimizer, device, parameters)
     model = model.eval()
 
     sample_importances = ssd.calc_importance(forget_train_dl)

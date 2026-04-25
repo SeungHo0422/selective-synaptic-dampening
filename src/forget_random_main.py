@@ -90,6 +90,15 @@ random.seed(args.seed)
 
 batch_size = args.b
 
+# # debug
+# net = getattr(models, args.net)(num_classes=args.classes)
+# checkpoint = torch.load(args.weight_path)
+# model_keys = set(net.state_dict().keys())
+# checkpoint_keys = set(checkpoint.keys())
+
+# print("Unexpected keys:", checkpoint_keys - model_keys)
+# print("Missing keys:", model_keys - checkpoint_keys)
+
 # get network
 net = getattr(models, args.net)(num_classes=args.classes)
 net.load_state_dict(torch.load(args.weight_path))
